@@ -1,25 +1,17 @@
-import logo from './logo.svg';
-import './App.css';
+import './styles.css';
+import Deck from './unsorted/deck';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export default function App() {
+    const deck = new Deck()
+    console.log(deck)
+    deck.shuffle()
+
+    return (
+        <div className="App">
+            Hi There
+            {/* landing page */}
+            {/* game lobby page (select single player {vs AI} or multiplayer game) */}
+
+        </div>
+    )
 }
-
-export default App;
