@@ -2,6 +2,7 @@ export default class Card {
     constructor(suit, value) {
         this.suit = suit
         this.value = value
+        this.code = suit[0] + value
         this.image = `https://deckofcardsapi.com/static/img/${value}${suit[0]}.png`
     }
 

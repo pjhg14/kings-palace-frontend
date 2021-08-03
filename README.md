@@ -1,1 +1,1 @@
-# Unnamed Palace Card Game Application - Frontend
+# King's Palace - Frontend

@@ -1,3 +1,14 @@
+export default function TutorialPage() {
+    // if localstorage.token exists push to:
+    // history.push(localStorage.token ? "/select" : "/portal/login")
+    return(
+        <div>
+            <h2></h2>
+            <p></p>
+        </div>
+    )
+}
+
 /* Game: Palace
 Rules:
     THE PACK
@@ -60,109 +71,3 @@ Rules:
     HOW TO KEEP SCORE
         Play all your face-up and face-down cards to win the game. The first person to do so wins and the game ends.
 */
-
-import { doFor, sample } from "../utility/utilities"
-
-export default class Game {
-    constructor(isOnline) {
-        if (isOnline) {
-            // DO stuff needed for online game
-        }
-
-        this.deck = new Deck()
-        deck.shuffle()
-        this.discard = new Deck([])
-        this.players = []
-        this.turns = 0
-
-
-        this.debug()
-    }
-
-    debug() {
-        console.log(this.deck, this.discard, this.players)
-
-    }
-
-    get player(playerNumber) {
-        return this.players[playerNumber - 1]
-    }
-
-    // Starts the game logic, game runtime will belong here
-    play() {
-        let winner = null
-
-        // While the game is in action
-        while(!winner) {
-            turns++
-
-            // Turn loop
-            this.players.forEach(player => {
-                // Turn start
-                if (player.ai) {
-                    // if player is ai, let ai randomly pick card
-                    this.aiMove(player)
-                } else {
-                    // if player is human, allow pick of card
-                    this.makeMove()
-                }
-
-                // End of turn
-                if (player.hasWon) {
-                    winner = player
-                }
-            })
-        }
-
-        if (winner.ai) {
-            console.log("better luck next time...")
-        } else {
-            console.log(`Congrats ${winner}`)
-        }
-    }
-
-    addPlayer(player) {
-        this.players << player
-
-        // add logic to add to deck size if players > 2
-    }
-
-    initPlayers() {
-        this.players.forEach(player => {
-            // player hand needs 3 cards
-            doFor(3, deal(player.id))
-
-            // player table needs 6 cards (3 hidden, 3 showing)
-            doFor(3, () => player.table[0] << this.deck.draw())
-            doFor(3, () => player.table[1] << this.deck.draw())
-        })
-    }
-
-    findPlayer(playerId) {
-        return this.players.find(player => player.id === playerId)
-    }
-
-    // Deals card to specified player's hand
-    deal(playerId) {
-        const player = this.findPlayer(playerId)
-        player.hand << this.deck.draw()
-    }
-
-    playCard() {
-        return card
-    }
-
-    // Basic control flow to facilitate a computer player
-    aiMove(player) {
-        if (player.hand > 0) {
-            // at the time turn is called, make move with random card in hand
-            player.playCard(sample(player.hand))
-        } else if (this.table[0] > 0) {
-            // if no cards in hand, use random showing table card
-            player.playCard(sample(player.table[0]))
-        } else {
-            // if no showing table cards, use hidde table cards
-            player.playCard(sample(player.table[1]))
-        }
-    }
-}
