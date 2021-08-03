@@ -4,8 +4,6 @@ export default function SignUp({ signup, addError }) {
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [passwordConf, setPasswordConf] = useState("")
-    
-    const [email, setEmail] = useState("")
 
     function onFormSubmit(event) {
         event.preventDefault()
@@ -15,7 +13,6 @@ export default function SignUp({ signup, addError }) {
             setUsername("")
             setPassword("")
             setPasswordConf("")
-            setEmail("")
             
             return
         }
@@ -23,14 +20,12 @@ export default function SignUp({ signup, addError }) {
         signup({
             username: username,
             password: password,
-            email: email
         },
         "")
 
         setUsername("")
         setPassword("")
         setPasswordConf("")
-        setEmail("")
     }
 
     return(
@@ -54,13 +49,6 @@ export default function SignUp({ signup, addError }) {
                 placeholder="Verify Password" 
                 value={passwordConf} 
                 onChange={e => setPasswordConf(e.target.value)}
-            />
-
-            <input
-                type="text" 
-                placeholder="Email" 
-                value={email} 
-                onChange={e => setEmail(e.target.value)}
             />
 
             <button type="submit">Submit</button>

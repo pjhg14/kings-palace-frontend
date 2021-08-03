@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
-import { Route, Switch, useHistory, useParams, useRouteMatch } from "react-router-dom"
+import {  useHistory, useParams, useRouteMatch } from "react-router-dom"
 import { createConsumer } from "@rails/actioncable";
-import MultiGame from "./MultiGame"
 import Waiting from "./Waiting"
+import Game from "./Game";
 
 export default function Room() {
     // login check
@@ -81,26 +81,68 @@ export default function Room() {
         }
 
         // if not host, wait for game to start
+        // if game has been started set started to true
         if (!game?.can_join) {
-            history.push(`${url}/game/${game.id}`)
+            setStarted(true)
         }
 
-        // if page is unmounted, disconnect from game
         return () => {
-            // Cleanup
-            console.log("unsubbing...")
-            subscription.unsubscribe()
+            if (game.is_done) {
+                console.log("unsubbing...")
+                unsubscribe()
+            }
         }
+
     },[code, game])
 
+    useEffect(() => {
+        window.addEventListener("beforeunload", unsubscribe)
+
+        return () => {
+            window.removeEventListener("beforeunload", unsubscribe)
+        }
+    },[])
+
+    function unsubscribe(event) {
+        event?.preventDefault()
+
+        if (event) {
+            // unsub from early leaving
+            if (confirm("Do you want to leave? You will be removed from the game")) {
+                subscription.unsubscribe()
+            }
+        } else {
+            // unsub fom game being done
+            unsubscribe()
+        }
+    }
+
     console.log({game, code})
+
+    function startGame(setErrorText) {
+        fetch(`http://localhost:3000/games/${game.id}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.token}`
+            }
+        })
+            .then(resp => resp.json())
+            .then(json => {
+                if (json.error) {
+                    setErrorText(json.error)
+                } else {
+                    console.log(json.message)
+                }
+            })
+    }
 
     return(
         <div>
             { started ? 
-                <MultiGame game={game} /> 
+                <Game game={game} /> 
                 : 
-                <Waiting game={game} />
+                <Waiting game={game} canStart={canStart} start={startGame}/>
             }
         </div>
     )

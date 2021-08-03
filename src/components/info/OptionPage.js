@@ -19,7 +19,6 @@ export default function OptionPage() {
             .then(resp => resp.json())
             .then(queriedGame => {
                 if (queriedGame.error) {
-                    // render error
                     setError(queriedGame.error)
                 } else {
                     history.push(`/room/${queriedGame.room_code}`)

@@ -1,19 +1,19 @@
 import { useState } from "react"
 
 export default function Login({ login }) {
-    const [email, setEmail] = useState("")
+    const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
 
     function onFormSubmit(event) {
         event.preventDefault()
 
         login({
-            email: email,
+            username: username,
             password: password
         },
         "login")
 
-        setEmail("")
+        setUsername("")
         setPassword("")
     }
 
@@ -21,9 +21,9 @@ export default function Login({ login }) {
         <form onSubmit={onFormSubmit}>
             <input 
                 type="text" 
-                placeholder="Email" 
-                value={email} 
-                onChange={e => setEmail(e.target.value)}
+                placeholder="Username" 
+                value={username} 
+                onChange={e => setUsername(e.target.value)}
             />
 
             <input

@@ -25,6 +25,7 @@ export default function Portal() {
                     setErrors(message.details)  
                 } else {
                     localStorage.token = message.token
+                    localStorage.username = message.username
                     // console.log(message)
                     history.push("/")
                 }
