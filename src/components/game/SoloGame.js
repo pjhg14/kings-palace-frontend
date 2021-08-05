@@ -1,19 +1,30 @@
-import { useReducer, useState} from "react"
+import { useEffect, useState } from "react"
 import { useHistory } from "react-router-dom"
-import UserPlayer from "./players/UserPlayer"
 
-export default function Game({ game, setWantToLeave }) {
-    const { players, deck, discard, turn } = game
-    
+export default function SoloGame() {
+    // login check
+    if (!localStorage.token) return <LoginError />
+
+    const { id } = useRouteMatch()
+    const [game, setGame] = useState(null)
     const history = useHistory()
 
-    const userPlayer = players.find(player => {
-        return player.username === localStorage.username
-    })
+    useEffect(() => {
+        fetch(`http://localhost:3000//games/${id}/start`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.token}`
+            }
+        })
+            .then(resp => resp.json())
+            .then(queriedGame => {
+                setGame(queriedGame)
+            })
+    },[id])
 
-    const [other1, other2, other3] = players.filter(player => {
-        return player.username !== localStorage.username
-    })
+    const { deck, discard, turn } = game
+    const [userPlayer, aiPlayer] = game?.players
 
     // User Play Logic/Actions ==================================================================>
     const [message, setMessage] = useState("")
@@ -22,6 +33,7 @@ export default function Game({ game, setWantToLeave }) {
     const [canPlay, setCanPlay] = useState(false)
 
     function playSelection() {
+        
         const data = {
             placed_cards: selection.map(select => select.card), 
             from: selection[0].from
@@ -48,14 +60,29 @@ export default function Game({ game, setWantToLeave }) {
                     // log message
                     console.log(json.message)
                     setMessage(json.message)
+                    
+                    // wait for 5 seconds, then let ai play
+                    let timer = setTimeout(() => {
+                        fetch(`http://localhost:3000/game/${game.room_code}`, {
+                            method: "GET",
+                            headers: {
+                                "Content-Type": "application/json",
+                                Authorization: `Bearer ${localStorage.token}`
+                            }
+                        })
+                            .then(resp => resp.json())
+                            .then(json => {
+                                setGame(game)
+                                clearTimeout(timer)
+                            })
+                    }, 5000);
+                    
                 }
             })
     }
 
     function selectionReducer(state, action) {
-        // Check if new selection can be played
         // Failure gates
-
         if (state.length <= 0) {
             // if there is no selection
             setPlayError("Please select a card")
@@ -102,8 +129,20 @@ export default function Game({ game, setWantToLeave }) {
     }
 
     function leaveGame() {
-        setWantToLeave(true)
-        history.push("/select")
+        if (confirm("Are you sure you want to leave the game? The game will be canceled.")) {
+            fetch(`http://localhost:3000/games/${game.id}/leave`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${localStorage.token}`
+                }
+            })
+                .then(resp => resp.json())
+                .then(json => {
+                    // wait for response to transition
+                    history.push("/select")
+                })
+        }
     }
     // END User Play Logic/Actions ==============================================================>
 
@@ -114,25 +153,29 @@ export default function Game({ game, setWantToLeave }) {
                     |      (AI)     |
             ----------------------------------
                     |  Deck    |    |    
-            player 3|   |     Disc  | player 4
+               X    |   |     Disc  |    X
             ----------------------------------
                     |               |  play card
              leave  |  user player  |  messages
         */
         <div id='game-board'>
-            <div className="block">X</div>
+            <Prompt 
+                when={!game.is_done}
+                message={leaveMsg}
+            />
+            <div>X</div>
             <div>player2</div>
-            <div className="block">Turn #{turn}</div>
-            <div>player3</div>
+            <div>Turn #{turn}</div>
+            <div>X</div>
             <div className="cards">
                 {deck}
                 {discard}
             </div>
-            <div>player4</div>
+            <div>X</div>
             <button onClick={leaveGame}>Leave Game</button>
             <UserPlayer 
                 player={userPlayer} 
-                selectionDispatch={selectionDispatch} 
+                selectionDispatch={selectionDispatch}
             />
             <div id="actions">
                 <button 

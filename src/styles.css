@@ -1,3 +1,27 @@
+:root {
+    /* 
+    --main-hue: 202;
+    --main-sat: 66%;
+    --main-light: 39%;
+    --main-alpha: 1;
+
+    --detail-hue: 43;
+    --detail-sat: 74%;
+    --detail-light: 49%;
+    --detail-aplha: 1;
+    */
+    /* fallback colors */
+    --main-color: #2275a5;
+    --detail-color: #d9a520;
+
+    --main-color: hsla(202, 66%, 39%, 1);
+    --detail-color: hsla(43, 74%, 49%, 1);
+
+    --color-3: #27213C;
+    --color-4: #D11149;
+    --color-5: #F9F4F5;
+}
+
 .debug {
     border: 3px solid black;
 }
@@ -19,23 +43,91 @@ body {
     
 }
 
-.App {
+#App {
     height: 100%;
     display: grid;
     grid-template-rows: auto 1fr auto;
 }
 
-#header {
-    background-color: brown;
+header {
+    background-color: var(--main-color);
 }
 
-#footer {
-    background-color: brown;
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
     height: 5vh;
+    background-color: var(--main-color);
 }
 
 .middle-content {
     overflow-y: scroll;
     display:flex;
     flex-direction: column;
+}
+
+div#game-board {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-rows: 1fr 2fr 1fr;
+    /* 
+    Grid should look like this:
+
+       X    |   player 2    |    X
+            |      (AI)     |
+    ----------------------------------
+            |  Deck    |    |    
+    player 3|   |     Disc  | player 4
+    ----------------------------------
+            |               |  play card
+       X    |  user player  |  messages
+    */
+}
+
+.vertical-player {
+    display: flex;
+}
+
+.v-player-table {
+    display: flex;
+    justify-content: center;
+}
+
+.table-show {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-49%,-49%);
+}
+
+/* .v-player-hand {
+
+} */
+
+.horizontal-player {
+    display: flex;
+    flex-direction: column;
+}
+
+.h-player-table {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* .h-player-hand {
+
+} */
+
+img.card {
+    width: 100px;
+    height: auto;
+    flex-shrink: 0;
+}
+
+.h-player-table img.card {
+    transform: rotate(90deg);
+    
 }

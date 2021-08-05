@@ -2,10 +2,22 @@ export default function TutorialPage() {
     // if localstorage.token exists push to:
     // history.push(localStorage.token ? "/select" : "/portal/login")
     return(
-        <div>
-            <h2></h2>
-            <p></p>
-        </div>
+        <>
+            <main>
+                <h2></h2>
+                <p></p>
+                <div>
+                    Game Rules were found at https://bicyclecards.com/how-to-play/palace/
+                    and instructional video here https://www.youtube.com/watch?v=LVFIpjNQ7R4&t=299s
+                </div>
+                
+            </main>
+            <footer id="footer">
+                <a href="https://github.com/pjhg14" rel="norefferer">Githib</a>
+                <a href="https://www.linkedin.com/in/pgrahamjr" rel="norefferer">LinkedIn</a>
+            </footer>
+        </>
+        
     )
 }
 

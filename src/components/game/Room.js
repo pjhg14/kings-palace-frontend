@@ -1,40 +1,28 @@
 import { useEffect, useState } from "react"
-import {  useHistory, useParams, useRouteMatch } from "react-router-dom"
+import {  Prompt, useHistory, useParams, useRouteMatch } from "react-router-dom"
 import { createConsumer } from "@rails/actioncable";
 import Waiting from "./Waiting"
 import Game from "./Game";
 
 export default function Room() {
     // login check
+    if (!localStorage.token) return <LoginError />
 
-    const { path, url } = useRouteMatch()
     const { code } = useParams()
-    const history = useHistory()
     const cable = useRef()
+    const subscription = useRef()
 
     const [game, setGame] = useState(null)
     const [started, setStarted] = useState(false)
     const [canStart, setCanStart] = useState(false)
-
-    let subscription
+    const [wantToLeave, setWantToLeave] = useState(false)
+    const leaveMsg = 
+            "Are you sure you want to leave the game?" +
+            "Your cards will be added to the deck and you will removed from the game." + 
+            " In progress games cannot be joined."
 
     useEffect(() => {
-        // if got here without code
-        if (!code) {
-            // Create game
-            fetch("http://localhost:3000/games", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${localStorage.token}`
-                },
-                body: JSON.stringify({is_solo_game: false})
-            })
-                .then(resp => resp.json())
-                .then(newGame => {
-                    setGame(newGame)
-                })
-        } else {
+        if (code) {
             // find game w/ code
             fetch(`http://localhost:3000/games/${code}`, {
                 method: "GET",
@@ -69,10 +57,13 @@ export default function Room() {
             disconnected() {
                 console.log("disconnected")
                 cable.current = null
+                subscription.current = null
             }
         }
 
-        subscription = cable.current.subscriptions.create(paramsToSend, handlers)
+        if (subscription.current) {
+            subscription.current = cable.current.subscriptions.create(paramsToSend, handlers)
+        }
 
         // if host choose to begin game
         const hostPlayer = game.players.find(player => player.is_host)
@@ -86,8 +77,18 @@ export default function Room() {
             setStarted(true)
         }
 
+        setWantToLeave(false)
+
         return () => {
             if (game.is_done) {
+                const winningplayer = game.players.find(player => player.has_won)
+
+                alert(`The game is over, ${winningplayer.user.username} wins!`)
+                console.log("unsubbing...")
+                unsubscribe()
+            }
+
+            if (wantToLeave) {
                 console.log("unsubbing...")
                 unsubscribe()
             }
@@ -106,21 +107,26 @@ export default function Room() {
     function unsubscribe(event) {
         event?.preventDefault()
 
-        if (event) {
-            // unsub from early leaving
-            if (confirm("Do you want to leave? You will be removed from the game")) {
-                subscription.unsubscribe()
+        const userPlayer = players.find(player =>{
+            return player.user.username === localStorage.username
+        })
+
+        if (!event) {
+            if (confirm(leaveMsg)) {
+                subscription.current.unsubscribe()
             }
         } else {
-            // unsub fom game being done
-            unsubscribe()
+            subscription.current.unsubscribe()
         }
+
+        cable.current = null
+        subscription.current = null
     }
 
     console.log({game, code})
 
     function startGame(setErrorText) {
-        fetch(`http://localhost:3000/games/${game.id}`, {
+        fetch(`http://localhost:3000/games/${game.id}/start`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -139,10 +145,14 @@ export default function Room() {
 
     return(
         <div>
+            <Prompt 
+                when={!game.is_done}
+                message={leaveMsg}
+            />
             { started ? 
-                <Game game={game} /> 
+                <Game game={game} setWantToLeave={setWantToLeave} /> 
                 : 
-                <Waiting game={game} canStart={canStart} start={startGame}/>
+                <Waiting game={game} canStart={canStart} start={startGame} setWantToLeave={setWantToLeave} />
             }
         </div>
     )
