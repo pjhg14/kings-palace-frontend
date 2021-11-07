@@ -1,13 +1,10 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import {  Prompt, useHistory, useParams, useRouteMatch } from "react-router-dom"
 import { createConsumer } from "@rails/actioncable";
 import Waiting from "./Waiting"
 import Game from "./Game";
 
 export default function Room() {
-    // login check
-    if (!localStorage.token) return <LoginError />
-
     const { code } = useParams()
     const cable = useRef()
     const subscription = useRef()
@@ -107,16 +104,16 @@ export default function Room() {
     function unsubscribe(event) {
         event?.preventDefault()
 
-        const userPlayer = players.find(player =>{
+        const userPlayer = game.players.find(player =>{
             return player.user.username === localStorage.username
         })
 
         if (!event) {
-            if (confirm(leaveMsg)) {
-                subscription.current.unsubscribe()
+            if (window.confirm(leaveMsg)) {
+                subscription.current.unsubscribe({player_id: userPlayer.id})
             }
         } else {
-            subscription.current.unsubscribe()
+            subscription.current.unsubscribe({player_id: userPlayer.id})
         }
 
         cable.current = null

@@ -1,13 +1,15 @@
-import { useEffect, useState } from "react"
-import { useHistory } from "react-router-dom"
+import { useEffect, useReducer, useState } from "react"
+import { Prompt, useHistory, useRouteMatch } from "react-router-dom"
+import UserPlayer from "./players/UserPlayer"
 
 export default function SoloGame() {
-    // login check
-    if (!localStorage.token) return <LoginError />
-
     const { id } = useRouteMatch()
     const [game, setGame] = useState(null)
     const history = useHistory()
+    const leaveMsg = 
+            "Are you sure you want to leave the game?" +
+            "Your cards will be added to the deck and you will removed from the game." + 
+            " In progress games cannot be joined."
 
     useEffect(() => {
         fetch(`http://localhost:3000//games/${id}/start`, {
@@ -47,7 +49,7 @@ export default function SoloGame() {
             },
             body: JSON.stringify({
                 game_id: game.id,
-                player_id: player.id,
+                player_id: game.player.id,
                 data
             })
         })
@@ -63,7 +65,7 @@ export default function SoloGame() {
                     
                     // wait for 5 seconds, then let ai play
                     let timer = setTimeout(() => {
-                        fetch(`http://localhost:3000/game/${game.room_code}`, {
+                        fetch(`http://localhost:3000/games/${game.room_code}`, {
                             method: "GET",
                             headers: {
                                 "Content-Type": "application/json",
@@ -115,7 +117,7 @@ export default function SoloGame() {
             case "add":
                 return [...state, action.card]
             case "remove":
-                newState = state.filter(selection => selection.card.code !== action.card.code)
+                const newState = state.filter(selection => selection.card.code !== action.card.code)
                 setCanPlay(newState.length > 0)
 
                 return newState
@@ -129,7 +131,7 @@ export default function SoloGame() {
     }
 
     function leaveGame() {
-        if (confirm("Are you sure you want to leave the game? The game will be canceled.")) {
+        if (window.confirm("Are you sure you want to leave the game? The game will be canceled.")) {
             fetch(`http://localhost:3000/games/${game.id}/leave`, {
                 method: "POST",
                 headers: {

@@ -8,7 +8,7 @@ export default function LandingPage() {
             <main className="middle-content">
                 <button onClick={() => {history.push("/portal/login")}}>Login</button>
                 <button onClick={() => {history.push("/portal/signup")}}>SignUp</button>
-                <button onClick={() => {history.push("/portal/tutorial")}}>How to Play</button>
+                <button onClick={() => {history.push("/tutorial")}}>How to Play</button>
 
                 <h2>Note:</h2>
                 <p>To play this game, you need to login, this is so the server knows who is who when playing</p>

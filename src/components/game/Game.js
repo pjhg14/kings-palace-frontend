@@ -35,7 +35,7 @@ export default function Game({ game, setWantToLeave }) {
             },
             body: JSON.stringify({
                 game_id: game.id,
-                player_id: player.id,
+                player_id: game.player.id,
                 data
             })
         })
@@ -88,7 +88,7 @@ export default function Game({ game, setWantToLeave }) {
             case "add":
                 return [...state, action.card]
             case "remove":
-                newState = state.filter(selection => selection.card.code !== action.card.code)
+                const newState = state.filter(selection => selection.card.code !== action.card.code)
                 setCanPlay(newState.length > 0)
 
                 return newState

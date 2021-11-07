@@ -2,9 +2,6 @@ import { useState } from "react"
 import { useHistory } from "react-router-dom"
 
 export default function OptionPage() {
-    // login check
-    if (!localStorage.token) return <LoginError />
-
     const history = useHistory()
     const [roomCode, setRoomCode] = useState("")
     const [error, setError] = useState("")
