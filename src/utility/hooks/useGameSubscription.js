@@ -1,15 +1,10 @@
 import { useReducer } from "react";
+import { initialState, subscriptionReducer } from "../reducers/subscriptionReducer";
 
 export function useGameSubsciption(game) {
-    useReducer(subscriptionStateReducer, initialState)
-}
+    const {state, dispatch} = useReducer(subscriptionReducer, initialState)
 
-const initialState = {
-    cable: "",
-    subscription: "",
-    cancelSub: () => {}
-}
 
-function subscriptionStateReducer(params) {
     
 }
+

@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react"
-import {  Prompt, useHistory, useParams, useRouteMatch } from "react-router-dom"
+import {  Prompt, useParams } from "react-router-dom"
 import { createConsumer } from "@rails/actioncable";
 import Waiting from "./Waiting"
 import Game from "./Game";
+import { baseURL } from "../../utility/links";
 
 export default function Room() {
     const { code } = useParams()
@@ -36,7 +37,7 @@ export default function Room() {
 
         // subscibe to game
         if (!cable.current) {
-            cable.current = createConsumer("ws://localhost:3000/cable")
+            cable.current = createConsumer(`ws://${baseURL}/cable`)
         }
 
         const paramsToSend = {

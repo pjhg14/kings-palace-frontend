@@ -149,17 +149,7 @@ export default function SoloGame() {
     // END User Play Logic/Actions ==============================================================>
 
     return(
-        /* 
-            Grid should look like this:
-               X    |   player 2    |  Turn count
-                    |      (AI)     |
-            ----------------------------------
-                    |  Deck    |    |    
-               X    |   |     Disc  |    X
-            ----------------------------------
-                    |               |  play card
-             leave  |  user player  |  messages
-        */
+        
         <div id='game-board'>
             <Prompt 
                 when={!game.is_done}
