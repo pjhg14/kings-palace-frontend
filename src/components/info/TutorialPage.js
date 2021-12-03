@@ -61,9 +61,7 @@ Rules:
         The player who put the 10 down then draws up to three cards and plays any card.
 
         If four of the same numbers are played in a row, either by one player or multiple players, it clears the discard pile. 
-        Place it to the side, as these cards are out of the game.
-
-        The next player can play any card from their hand.
+        Place it to the side, as these cards are out of the game. The next player can play any card from their hand.
 
         Play continues around the table until the Draw pile is depleted.
 
@@ -76,7 +74,8 @@ Rules:
         When it's your turn and you don't have a hand, play one card from your face-up cards in front of you.
 
         When it's your turn and you've played all your face-up cards, pick a card that's face-down on the table. 
-        Don't look at it to choose. Simply flip it over. If it plays on the current card by being equal or higher, you can play it. If not, you must pick up the discard pile.
+        Don't look at it to choose. Simply flip it over. If it plays on the current card by being equal or higher, you can play it. 
+        If not, you must pick up the discard pile.
 
         If you pick up the discard pile, you must play those before continuing to play your face-down cards.
 
