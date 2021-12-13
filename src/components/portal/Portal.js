@@ -1,12 +1,10 @@
 import { useState } from "react"
-import { Link, useHistory, useParams } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
 import Login from "./Login";
 import SignUp from "./SignUp";
 
 export default function Portal() {
-    const { type } = useParams()
     const [errors, setErrors] = useState([])
-    const history = useHistory()
 
     function submitCrdentials(credentials, type) {
         setErrors([])
@@ -26,8 +24,7 @@ export default function Portal() {
                 } else {
                     localStorage.token = message.token
                     localStorage.username = message.username
-                    // console.log(message)
-                    history.push("/")
+                    navigate("/")
                 }
             })
     }

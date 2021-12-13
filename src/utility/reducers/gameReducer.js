@@ -1,8 +1,11 @@
-export const initialGameState = {
+import { actionEnum as actions } from "../playerActions";
+
+/* Sample game
+    {
         room_code: "",
         started: "",
-        swap_phase: "",
-        main_phase: "",
+        swap_phase: true,
+        main_phase: true,
         finished: "",
         players: [
             {
@@ -12,44 +15,56 @@ export const initialGameState = {
         ],
         deck: [],
         discard: []
+    }
+*/
+
+export const initialGameState = {
+        room_code: null,
+        started: null,
+        swap_phase: null,
+        main_phase: null,
+        finished: null,
+        players: [],
+        deck: [],
+        discard: []
 }
 
 export function gameReducer(state, action) {
-    switch (key) {
-        // set top of deck to discard
-
-        case "setGame":
+    switch (action.type) {
+        case "loadGame":
             return action.payload
         case "processMoves":
-            turn.moves.forEach(move => {
-                // process move
-                if (state.swap_phase) {
-                    // allow only swapCard command
-                } else {
-                    // allow all command except swapCard
-                }
-            });
+            
+            const newGameState = processTurn(state, turn)
 
-            return {
-                ...state,
-
-            }
+            return newGameState
         default:
             break;
     }
 }
 
-function processTurn(game, move) {
+function processTurn(game, turn) {
+    // Get player making the move here
+    const player = game.players.find(player => player.id === turn[0].player.id)
+    const newGameState = {...game}
+
     switch (move.action) {
-        case "draw":
+        case actions.DRAW:
+            // Add card from top of deck to player hand
             break;
-        case "place":
+        case actions.PLACE:
+            // Add selected card from player hand to 
             break;
-        case "swap":
+        case actions.SWAP:
+            // Swap selected card with card in chosen face-up table area
             break;
-        case "penalty":
+        case actions.PENALTY:
+            // Player takes ALL of the cards in the discard pile
             break;
         default:
+            // Some sort of error state here
             break;
     }
+
+    return newGameState
 }
